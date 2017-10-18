@@ -1,0 +1,95 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <fstream>
+
+using namespace std;
+
+#include "error.h"
+#include "error.cpp"
+
+int main()
+{
+    system("clear");
+    
+    int select;
+    string name;
+    double value;
+    char errType;
+    bool rules, done = false;
+    ofstream writeFile;
+    Error Lab4;
+
+    while(!done)
+    {
+	do
+	{
+	    cout << "ENTER SELECTION:\n";
+	    cout << " 1|\t ADD ENTRY" << endl;
+	    cout << " 2|\t SHOW CURRENT ENTRIES" << endl;
+	    cout << " 3|\t DELETE ENTRY" << endl;
+	    cout << " 4|\t EXPORT ERROR TABLE TO FILE" << endl;
+	    cout << " 0|\t QUIT" << endl;
+	    cin  >> select;
+	}while (select != 1 && select != 2 && select != 3
+		&& select != 4 && select != 0);
+	switch (select)
+	{
+	case 1:
+	{
+	    try
+	    {
+
+		cout << endl << "\tADDING ENTRY . . ." << endl << endl;
+		cout << "Enter the name of the variable: ";
+		cin.ignore();
+		getline(cin, name);
+		cout << "Enter the value for " << name << ": ";
+		cin  >> value;
+		do
+		{
+		    cout << "If an error is known, enter Y.\n";
+		    cout << "Otherwise, enter N: ";
+		    cin  >> errType;
+		}while (errType != 'Y' && errType != 'y'
+		    && errType != 'N' && errType != 'n');
+		
+		if (errType == 'Y' || errType == 'y')
+		    rules = false;
+		else
+		    rules = true;
+		Lab4.addEntry(name,value,rules);
+	    }
+	    catch (logic_error one)
+	    {
+		std::cout << one.what() << endl;
+	    }
+	    break;
+	}
+	case 2:
+	{
+	    Lab4.displayTable();
+	    break;
+	}
+	case 3:
+	{
+	    Lab4.deleteEntry();
+	    break;
+	}
+	case 4:
+	{
+	    writeFile.open("lab4.txt");
+	    cout << "NOW EXPORTING ERROR TABLE TO FILE . . . " << endl;
+	    writeFile << Lab4.displayTable();
+	    writeFile.close();
+	    cout << "DONE." << endl;
+	    break;
+	}
+	case 0:
+	    done = true;
+	    break;
+	}
+    }
+    
+    return 0;
+}
